@@ -124,16 +124,7 @@ struct ContentView: View {
                     // MARK: - TASKS
                     List {
                         ForEach(items) { item in
-                            VStack(alignment: .leading) {
-                                Text(item.task ?? "")
-                                    .font(.headline)
-                                    .fontWeight(.bold)
-                                    
-                                
-                                Text("Item at \(item.timestamp!, formatter: itemFormatter)")
-                                    .font(.footnote)
-                                    .foregroundColor(.gray)
-                            }//: LIST ITEM
+                            ListRowItemView(item: item)
                         }//: LOOP
                         .onDelete(perform: deleteItems)
                     }
@@ -143,10 +134,16 @@ struct ContentView: View {
                     .frame(maxWidth: 640)
                     .scrollContentBackground(.hidden)
                 }
-                // MARK: - NEW TASK ITEM
+                .blur(radius: showNewTaskItem ? 8 : 0, opaque: false)
+                .transition(.move(edge: .bottom))
+                .animation(.easeOut(duration: 0.5))
                 
+                // MARK: - NEW TASK ITEM
                 if showNewTaskItem {
-                    BlankView()
+                    BlankView(
+                        backgroundColor: isDarkMode ? Color.black : Color.white,
+                        backgroundOpacity: isDarkMode ? 0.3 : 0.5
+                    )
                         .onTapGesture {
                             withAnimation {
                                 showNewTaskItem = false
@@ -168,6 +165,7 @@ struct ContentView: View {
             }
             .background(
                 BackgroundImageView()
+                    .blur(radius: showNewTaskItem ? 8 : 0, opaque: false)
             )
             .background(
                 backgroundGradient.ignoresSafeArea(.all)
